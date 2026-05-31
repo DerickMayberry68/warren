@@ -1,0 +1,30 @@
+{
+  "name": "warren",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.11.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:marketing": "turbo dev --filter=@warren/marketing",
+    "dev:admin": "turbo dev --filter=@warren/admin",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "db:generate": "turbo db:generate --filter=@warren/db",
+    "db:push": "turbo db:push --filter=@warren/db"
+  },
+  "devDependencies": {
+    "turbo": "^2.8.0",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "dependencies": {
+    "lucide-react": "^1.17.0"
+  }
+}
