@@ -9,10 +9,11 @@ import {
   Wrench,
   Zap,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { BackToTop } from "@/components/back-to-top";
 import { ContactModal } from "@/components/contact-modal";
+import { GeneratorShowcase } from "@/components/generator-showcase";
+import { HeroBackgroundRotator } from "@/components/hero-background-rotator";
 import { WarrenLogo } from "@/components/warren-logo";
 
 const services = [
@@ -45,43 +46,15 @@ const proofPoints = [
   "Affordable repair work",
 ];
 
-const generatorProducts = [
-  {
-    alt: "Home standby generator",
-    image: "/images/generators/standby-generator.png",
-    label: "Home standby",
-    text: "Whole-home backup power for outages and rough weather.",
-  },
-  {
-    alt: "Portable generator",
-    image: "/images/generators/portable-generator.png",
-    label: "Portable power",
-    text: "Jobsite and emergency power that can move with the work.",
-  },
-  {
-    alt: "Generator installation",
-    image: "/images/generators/generator-installation.png",
-    label: "Install support",
-    text: "A practical path from product questions to installed equipment.",
-  },
-];
-
 export default function Home() {
   return (
     <main className="bg-[#f4efe5] text-[#17130f]">
       <section className="relative min-h-[92svh] overflow-hidden bg-[#15110e] text-[#f7f0e2]">
-        <Image
-          alt="Welder working in a dark fabrication shop"
-          className="object-cover"
-          fill
-          priority
-          sizes="100vw"
-          src="/images/welding-shop-hero.png"
-        />
+        <HeroBackgroundRotator />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(16,13,11,0.94)_0%,rgba(16,13,11,0.82)_34%,rgba(16,13,11,0.28)_68%,rgba(16,13,11,0.54)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,rgba(21,17,14,0)_0%,#15110e_92%)]" />
 
-        <div className="relative mx-auto flex min-h-[92svh] w-full max-w-7xl flex-col px-5 py-5 sm:px-8 lg:px-10">
+        <div className="relative mx-auto flex min-h-[92svh] w-full flex-col px-[2vw] py-5">
           <header className="flex items-center justify-between border-b border-[#f7f0e2]/12 pb-4">
             <Link
               aria-label="Warren Welding and Generators home"
@@ -148,8 +121,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-[#2a2119]/10 bg-[#15110e] px-5 py-5 text-[#f7f0e2] sm:px-8 lg:px-10">
-        <div className="mx-auto grid max-w-7xl gap-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#f7f0e2]/70 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="border-y border-[#2a2119]/10 bg-[#15110e] px-[2vw] py-5 text-[#f7f0e2]">
+        <div className="mx-auto grid gap-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#f7f0e2]/70 sm:grid-cols-2 lg:grid-cols-4">
           {proofPoints.map((point) => (
             <div className="flex items-center gap-3" key={point}>
               <ShieldCheck className="size-4 text-[#d9762a]" />
@@ -160,10 +133,10 @@ export default function Home() {
       </section>
 
       <section
-        className="bg-[#f4efe5] px-5 py-20 sm:px-8 lg:px-10"
+        className="bg-[#f4efe5] px-[2vw] py-20"
         id="services"
       >
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto">
           <div className="grid gap-8 lg:grid-cols-[0.62fr_1fr] lg:items-end">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#8f3f21]">
@@ -205,16 +178,16 @@ export default function Home() {
       </section>
 
       <section
-        className="bg-[#251c17] px-5 py-20 text-[#f7f0e2] sm:px-8 lg:px-10"
+        className="bg-[#251c17] px-[2vw] py-20 text-[#f7f0e2]"
         id="generators"
       >
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+        <div className="mx-auto grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#d7a15b]">
-              Generators & equipment
+              Generac generators & equipment
             </p>
             <h2 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-balance sm:text-5xl">
-              Power, hay, and equipment support under one roof.
+              Backup power, hay, and equipment support under one roof.
             </h2>
             <div className="mt-8 grid gap-5 text-[#f7f0e2]/74 sm:grid-cols-2">
               <div className="border-t border-[#f7f0e2]/16 pt-5">
@@ -240,7 +213,7 @@ export default function Home() {
               <div className="border-t border-[#f7f0e2]/16 pt-5">
                 <Zap className="mb-4 size-5 text-[#d9762a]" />
                 <h3 className="font-semibold text-[#f7f0e2]">
-                  Standby generators
+                  Generac standby generators
                 </h3>
                 <p className="mt-3 leading-7">
                   Backup-power support from a local shop that knows equipment,
@@ -260,40 +233,12 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid gap-4">
-            {generatorProducts.map((product) => (
-              <article
-                className="grid overflow-hidden rounded-lg border border-[#f7f0e2]/12 bg-[#f7f0e2]/7 sm:grid-cols-[180px_1fr]"
-                key={product.label}
-              >
-                <div className="relative min-h-40 bg-[#f7f0e2]">
-                  <Image
-                    alt={product.alt}
-                    className="object-contain p-4"
-                    fill
-                    sizes="(min-width: 1024px) 180px, 100vw"
-                    src={product.image}
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-xl font-semibold">{product.label}</h3>
-                  <p className="mt-3 leading-7 text-[#f7f0e2]/72">
-                    {product.text}
-                  </p>
-                  <ContactModal
-                    className="mt-5 h-10 px-4"
-                    label="Ask about this"
-                    tone="outline"
-                  />
-                </div>
-              </article>
-            ))}
-          </div>
+          <GeneratorShowcase />
         </div>
       </section>
 
-      <section className="bg-[#f4efe5] px-5 py-20 sm:px-8 lg:px-10">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.78fr_1fr] lg:items-start">
+      <section className="bg-[#f4efe5] px-[2vw] py-20">
+        <div className="mx-auto grid gap-10 lg:grid-cols-[0.78fr_1fr] lg:items-start">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#8f3f21]">
               A generational trade
@@ -317,10 +262,10 @@ export default function Home() {
       </section>
 
       <section
-        className="bg-[#17130f] px-5 py-16 text-[#f7f0e2] sm:px-8 lg:px-10"
+        className="bg-[#17130f] px-[2vw] py-16 text-[#f7f0e2]"
         id="contact"
       >
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-center">
+        <div className="mx-auto grid gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-center">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#d7a15b]">
               Contact Warren Welding
