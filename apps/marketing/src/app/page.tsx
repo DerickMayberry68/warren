@@ -61,7 +61,7 @@ export default function Home() {
               className="block"
               href="/"
             >
-              <WarrenLogo className="h-12 w-[205px]" />
+              <WarrenLogo className="h-14 w-[220px]" />
             </Link>
             <nav className="hidden items-center gap-8 text-sm font-medium text-[#f7f0e2]/74 md:flex">
               <a className="transition hover:text-[#f7f0e2]" href="#services">
