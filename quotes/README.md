@@ -15,9 +15,11 @@ The saved pricing is:
 - Website, admin portal and AI setup: $3,600, paid upfront or in twelve $300 installments.
 - Ongoing service: $99/month starting at launch. The installment option is $399/month for its first twelve months, then $99/month.
 - Base first-year total: $4,788 under either payment option.
-- Scheduling: the discussed allowance was $2,000-$3,000; the complete first-year total within that allowance is $6,788-$7,788, with no separate Phase 2 charge per Derick's instruction.
+- Scheduling: on September 29, 2026, Derick selected a fixed $2,000 price, additional to the $3,600 website/admin/AI build. This covers the complete scheduling scope described above, with no separate Phase 2 charge. It replaces the earlier $2,000-$3,000 allowance.
+- Combined build cost: $5,600.
+- Complete first-year total, including twelve months of ongoing service: $6,788.
 
-The assistant subsequently proposed a fixed $2,500 scheduler price, a $7,288 first-year total, and scheduler payments of $1,250 at signing and $1,250 at delivery. The conversation does not explicitly confirm that fixed amount, payment schedule, or which website payment option the customer selected. Do not treat those proposed details as confirmed invoice instructions.
+The earlier assistant proposal of a $2,500 scheduler price and $7,288 first-year total is superseded by Derick's $2,000 decision. Scheduler payment timing and the customer's choice of website payment option remain unconfirmed. Do not treat the previously proposed $1,250 signing/delivery payments as invoice instructions.
 
 ## Getting this quote on another computer
 
