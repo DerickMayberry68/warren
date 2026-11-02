@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Warren Admin",
   description: "Admin workspace for Warren.",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

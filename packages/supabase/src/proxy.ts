@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseBrowserEnv } from "./env";
 import type { Database } from "./types";
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(request: NextRequest, options: { staffOnly?: boolean } = {}) {
   const { publishableKey, url } = getSupabaseBrowserEnv();
   let response = NextResponse.next({ request });
 
@@ -22,7 +22,29 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (options.staffOnly) {
+    // Do not cache authentication redirects or refreshed session cookies.
+    response.headers.set("Cache-Control", "private, no-store");
+    const publicPath = request.nextUrl.pathname === "/login" ||
+      request.nextUrl.pathname === "/auth/confirm";
+    const destination = !user || error
+      ? (publicPath ? null : "/login")
+      : !["admin", "staff"].includes(user.app_metadata.role)
+        ? (request.nextUrl.pathname === "/access-denied" || publicPath ? null : "/access-denied")
+        : null;
+
+    if (destination) {
+      const url = request.nextUrl.clone();
+      url.pathname = destination;
+      url.search = "";
+      const redirect = NextResponse.redirect(url, 303);
+      response.cookies.getAll().forEach(cookie => redirect.cookies.set(cookie));
+      redirect.headers.set("Cache-Control", "private, no-store");
+      return redirect;
+    }
+  }
 
   return response;
 }

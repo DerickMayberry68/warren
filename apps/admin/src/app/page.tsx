@@ -1,5 +1,5 @@
-import { Button } from "@warren/ui";
-import { createClient } from "@warren/supabase/server";
+import { requireStaff } from "@/lib/auth";
+import { signOut } from "@/app/login/actions";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -16,8 +16,8 @@ type Contact = {
 };
 
 async function getContacts() {
+  const { supabase } = await requireStaff();
   try {
-    const supabase = await createClient();
     const { data, error } = await supabase
       .from("contacts")
       .select("id,name,email,phone,service,message,status,created_at")
@@ -54,12 +54,13 @@ function formatDate(value: string) {
 }
 
 export default async function Home() {
+  const { user } = await requireStaff();
   const { contacts, error } = await getContacts();
   const newContacts = contacts.filter((contact) => contact.status === "new");
   const metrics = [
     { label: "Open leads", value: String(newContacts.length) },
     { label: "Recent contacts", value: String(contacts.length) },
-    { label: "Admin users", value: "0" },
+    { label: "Your access", value: user.app_metadata.role === "admin" ? "Admin" : "Staff" },
   ];
 
   return (
@@ -70,6 +71,7 @@ export default async function Home() {
             Warren
           </div>
           <nav className="mt-10 grid gap-1 text-sm">
+            {user.app_metadata.role === "admin" && <Link className="rounded-md px-3 py-2 text-foreground/65" href="/staff">Staff &amp; access</Link>}
             <Link
               className="rounded-md bg-black/[0.04] px-3 py-2 dark:bg-white/10"
               href="/"
@@ -84,9 +86,9 @@ export default async function Home() {
             </Link>
             <Link
               className="rounded-md px-3 py-2 text-foreground/65"
-              href="/settings"
+              href="/set-password"
             >
-              Settings
+              Password settings
             </Link>
           </nav>
         </aside>
@@ -99,7 +101,10 @@ export default async function Home() {
                 Workspace overview
               </h1>
             </div>
-            <Button className="w-full sm:w-auto">New entry</Button>
+            <form action={signOut} className="flex flex-wrap items-center gap-4">
+              <span className="text-sm text-foreground/65">{user.email}</span>
+              <button className="rounded-md border border-current/20 px-4 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-4">Sign out</button>
+            </form>
           </header>
 
           <div className="mt-6 grid gap-4 md:grid-cols-3">
