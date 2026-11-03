@@ -1,0 +1,9 @@
+import { requireStaff } from "@/lib/auth";
+
+export async function ContactRequests({limit=25}:{limit?:number}) {
+  const {supabase}=await requireStaff();
+  const {data,error}=await supabase.from("contacts").select("id,name,email,phone,service,message,status,created_at").order("created_at",{ascending:false}).limit(limit);
+  return <div className="portal-panel overflow-hidden">
+    {error?<p role="alert" className="p-6 text-sm text-[#8f3f21]">Unable to load contact requests. Reload and try again.</p>:!data?.length?<p className="p-8 text-sm text-[#6a5b50]">No contact requests yet.</p>:<div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm"><thead className="border-b border-[#2a2119]/15 bg-[#f4efe5]"><tr>{["Customer","Service","Contact","Status","Received"].map(label=><th key={label} className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-[#6a5b50]">{label}</th>)}</tr></thead><tbody className="divide-y divide-[#2a2119]/10">{data.map(contact=><tr key={contact.id}><td className="px-5 py-4 align-top"><p className="font-medium">{contact.name}</p>{contact.message&&<p className="mt-1 max-w-xs whitespace-pre-wrap text-[#6a5b50]">{contact.message}</p>}</td><td className="px-5 py-4 align-top">{contact.service}</td><td className="px-5 py-4 align-top"><a className="block underline-offset-4 hover:underline" href={`mailto:${contact.email}`}>{contact.email}</a>{contact.phone&&<a className="mt-1 block text-[#6a5b50]" href={`tel:${contact.phone}`}>{contact.phone}</a>}</td><td className="px-5 py-4 align-top"><span className="rounded border border-[#2a2119]/15 px-2 py-1 text-xs capitalize">{contact.status}</span></td><td className="px-5 py-4 align-top text-[#6a5b50]">{new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",dateStyle:"medium"}).format(new Date(contact.created_at))}</td></tr>)}</tbody></table></div>}
+  </div>;
+}

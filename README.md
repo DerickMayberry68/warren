@@ -74,6 +74,43 @@ Preview/Development Vercel variables and the admin deployment connection
 remain unconfigured. Admin authentication is implemented locally; it has not
 yet been published to Vercel.
 
+## Scheduling foundation (November 3, 2026)
+
+Open **Schedule & jobs** in the admin sidebar or `/schedule`.
+Admins can create/edit customer and equipment jobs, move job progress on the
+shop board through the job editor, add timed field visits or flexible shop-day
+ranges, assign multiple staff and a lead, reschedule, cancel, and complete
+individual bookings. The weekly calendar shows bookings and assigned crew.
+Staff can read only their assigned jobs/bookings; only admins manage scheduling.
+
+Times use `America/Chicago`. Nonexistent spring-forward times are rejected;
+the repeated fall hour resolves to its earlier occurrence. Overlapping staff
+assignments require explicit acknowledgement, including flexible shop-day
+reservations. Adjacent timed visits do not overlap. Booking/crew changes are
+transactional. A completed visit does not complete the overall job; remaining
+scheduled bookings must be completed/cancelled before closing the job.
+
+The scheduling migrations are applied to the linked remote project. The app
+changes are local and not yet committed or deployed. Verification includes:
+
+```bash
+node scripts/test-scheduling-time.mjs
+supabase db query --linked --file supabase/tests/scheduling_access.sql
+```
+
+Remote RLS/transaction tests, Central Time/DST tests, type checks, lint, builds,
+and production-browser create/edit/reschedule/overlap/complete/cancel checks
+passed. Disposable browser fixtures were removed. Performance advisors reported
+no issues. The project-wide Auth advisor separately reports that
+[leaked-password protection is disabled](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
+Remaining scheduler work: dedicated day/My day views, reusable named crews,
+drag-and-drop scheduling, staff field-status/notes updates, activity history,
+notifications and verified delivery, phone-calendar subscriptions, time off,
+and resource/bay capacity. Current job list is capped at 200 most recently
+updated jobs; booking views have explicit initial limits. These limits and
+the remaining features should be addressed before a full scheduling release.
+
 ## Admin authentication
 
 The admin app uses email/password sign-in, server-verified Supabase users,
@@ -157,3 +194,5 @@ Staff-management verification also passed: browser-created Staff account,
 duplicate rejection, Admin/Staff role changes, setup-link copying and replacement,
 remote role persistence, staff/anonymous management-page denial, and hidden
 management navigation for staff. The disposable test account was removed.
+
+The private portal uses a shared grouped sidebar and account header across the dashboard, schedule, jobs, inquiries, staff, and password settings. This layout retains Warren branding and does not change the marketing site.

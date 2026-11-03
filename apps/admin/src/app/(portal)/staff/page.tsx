@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { createAdminClient } from "@warren/supabase/admin";
 import { requireAdmin } from "@/lib/auth";
 import { AddStaffForm, StaffControls, StaffProfileForm } from "./staff-forms";
@@ -14,11 +13,11 @@ export default async function StaffPage() {
     users.push(...data.users);
     if (data.users.length < 100) break;
   }
-  return <main className="min-h-screen bg-[#f4efe5] px-5 py-8 text-[#17130f] sm:px-8">
-    <div className="mx-auto max-w-5xl">
-      <Link href="/" className="text-sm underline underline-offset-4">Back to dashboard</Link>
-      <p className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-[#8f3f21]">Warren Welding &amp; Generators</p>
-      <h1 className="mt-3 text-3xl font-semibold">Staff &amp; access</h1>
+  return <section className="min-w-0">
+    <div className="max-w-6xl">
+
+
+      <h1 className="text-3xl font-semibold">Staff &amp; access</h1>
       <p className="mt-3 max-w-2xl leading-7 text-[#6a5b50]">Staff can use the workspace. Admins can also add people and manage their roles. Only give Admin access to people who should manage accounts.</p>
       <section className="mt-8 rounded-lg border border-[#2a2119]/15 bg-[#fffaf0] p-5 sm:p-6" aria-labelledby="add-staff">
         <h2 id="add-staff" className="mb-5 text-lg font-semibold">Add a staff member</h2>
@@ -46,5 +45,7 @@ export default async function StaffPage() {
         </div>
       </section>
     </div>
-  </main>;
+  </section>;
 }
+
+import Link from "next/link";
