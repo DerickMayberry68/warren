@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireStaff } from "@/lib/auth";
 import { centralToday, shiftDay, weekStart, bookingDays, bookingLabel, parseCentral, statuses } from "@/lib/scheduling";
-import { JobForm } from "./forms";
+import { CreateJobPanel } from "./forms";
 import { schedulingCrew } from "@/lib/schedule-data";
 
 export default async function SchedulePage({searchParams}:{searchParams:Promise<{week?:string;view?:string}>}) {
@@ -26,7 +26,7 @@ export default async function SchedulePage({searchParams}:{searchParams:Promise<
 
       <header className="flex flex-wrap items-end justify-between gap-5"><div><h1 className="text-3xl font-semibold">{jobsView?"Jobs":board?"Shop board":isAdmin?"Shop & crew schedule":"My assigned work"}</h1><p className="mt-3 text-sm text-[#6a5b50]">All times are Central Time. Shop days are flexible; field visits have appointment times.</p></div>
       <nav className="flex flex-wrap gap-3 text-sm" aria-label="Schedule views"><Link href={`/schedule?week=${monday}`} className={`rounded-md border px-4 py-2 ${!board&&!jobsView?"bg-[#17130f] text-white":"border-[#2a2119]/25"}`}>Week calendar</Link><Link href={`/schedule?view=board&week=${monday}`} className={`rounded-md border px-4 py-2 ${board?"bg-[#17130f] text-white":"border-[#2a2119]/25"}`}>Shop board</Link></nav></header>
-      {isAdmin && <details className="mt-7 rounded-lg border border-[#2a2119]/20 bg-[#fffaf0] p-5"><summary className="cursor-pointer font-semibold">Create a job</summary><JobForm/></details>}
+      {isAdmin && <CreateJobPanel key={`${params.view??"calendar"}:${monday}`}/>}
       {!board && !jobsView ? <section className="mt-8" aria-labelledby="week-title">
         <div className="flex flex-wrap items-center justify-between gap-4"><h2 id="week-title" className="text-lg font-semibold">{monday} – {sunday}</h2><nav aria-label="Calendar weeks" className="flex gap-5 text-sm underline underline-offset-4"><Link href={`/schedule?week=${shiftDay(monday,-7)}`}>Previous week</Link><Link href="/schedule">This week</Link><Link href={`/schedule?week=${next}`}>Next week</Link></nav></div>
         <div className="mt-4 overflow-x-auto pb-3"><div className="grid min-w-[1050px] grid-cols-7 gap-3">{Array.from({length:7},(_,i)=>shiftDay(monday,i)).map(day=>{

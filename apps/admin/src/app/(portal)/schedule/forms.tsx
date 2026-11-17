@@ -9,7 +9,12 @@ const button="rounded-md bg-[#17130f] px-4 py-3 text-sm font-semibold text-white
 function Result({state}:{state:ScheduleState}) { return <div aria-live="polite" className="mt-3 text-sm">{state.error && <p role="alert" className="rounded-md border border-[#8f3f21]/25 bg-[#8f3f21]/5 p-3 text-[#762f19]">{state.error}</p>}{state.message && <p className="rounded-md bg-green-800/10 p-3">{state.message}</p>}</div>; }
 function Field({label,name,value,required=false,type="text",max=500}:{label:string;name:string;value?:string|null;required?:boolean;type?:string;max?:number}) { return <label className="grid min-w-0 gap-2 text-sm font-medium">{label}<input className={input} name={name} type={type} defaultValue={value??""} required={required} maxLength={max}/></label>; }
 
-export function JobForm({job}:{job?:Job}) {
+export function CreateJobPanel() {
+  const [open,setOpen]=useState(false);
+  return <details open={open} onToggle={event=>setOpen(event.currentTarget.open)} className="mt-7 rounded-lg border border-[#2a2119]/20 bg-[#fffaf0] p-5"><summary className="cursor-pointer font-semibold">Create a job</summary>{open&&<JobForm onCancel={()=>setOpen(false)}/>}</details>;
+}
+
+export function JobForm({job,onCancel}:{job?:Job;onCancel?:()=>void}) {
   const [state,action,pending]=useActionState(saveJob,{});
   return <form action={action} onReset={event=>event.preventDefault()} className="mt-5">
     <input type="hidden" name="id" value={job?.id??""}/>
@@ -22,7 +27,7 @@ export function JobForm({job}:{job?:Job}) {
       <Field label="Requested due date" name="due_date" type="date" value={job?.due_date}/><Field label="Blocker / waiting on" name="blocker" value={job?.blocker} max={300}/>
     </div>
     <label className="mt-4 grid gap-2 text-sm font-medium">Job instructions<textarea name="instructions" defaultValue={job?.instructions??""} maxLength={5000} rows={3} className={input}/></label>
-    <button disabled={pending} className={`${button} mt-5`}>{pending?"Saving…":job?"Save job":"Create job"}</button><Result state={state}/>
+    <div className="mt-5 flex items-center gap-3"><button disabled={pending} className={button}>{pending?"Saving…":job?"Save job":"Create job"}</button>{onCancel&&<button type="button" disabled={pending} onClick={onCancel} className="rounded-md border border-[#2a2119]/25 px-4 py-3 text-sm font-semibold disabled:opacity-50">Cancel</button>}</div><Result state={state}/>
   </form>;
 }
 

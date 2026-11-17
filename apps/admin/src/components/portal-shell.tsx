@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { CalendarDays, Columns3, ClipboardList, ExternalLink, LayoutDashboard, LogOut, Mail, Menu, Settings, Users, Wrench, X } from "lucide-react";
+import { CalendarDays, Columns3, ClipboardList, ExternalLink, LayoutDashboard, LogOut, Mail, Menu, Route, Settings, Users, Wrench, X } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "@/app/login/actions";
 
@@ -10,6 +10,7 @@ const sections = [
   { label: "Overview", items: [{ label: "Dashboard", href: "/", icon: LayoutDashboard }] },
   { label: "Shop operations", items: [
     { label: "Schedule", href: "/schedule", icon: CalendarDays },
+    { label: "Route planner", href: "/route-planner", icon: Route },
     { label: "Shop board", href: "/schedule?view=board", icon: Columns3 },
     { label: "Jobs", href: "/schedule?view=jobs", icon: ClipboardList },
   ] },
