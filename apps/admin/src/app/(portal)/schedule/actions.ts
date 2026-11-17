@@ -90,6 +90,7 @@ export async function saveBooking(_state: ScheduleState, form: FormData): Promis
 export async function finishBooking(_state: ScheduleState, form: FormData): Promise<ScheduleState> {
   const { supabase } = await requireAdmin();
   const id=text(form,"id"), job=text(form,"job_id"), status=text(form,"status");
+  if (!status) return { error: "Select an outcome first. The visit is still scheduled." };
   if (!uuid(id) || !uuid(job) || !["completed","cancelled"].includes(status)) return { error: "Invalid booking update." };
   const result=await supabase.from("bookings").update({status,updated_at:new Date().toISOString()}).eq("id",id).eq("job_id",job).eq("status","scheduled").select("id").single();
   if(result.error) return {error:"This booking has changed. Reload and try again."};
