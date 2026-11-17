@@ -77,8 +77,8 @@ yet been published to Vercel.
 ## Scheduling foundation (November 3, 2026)
 
 Open **Schedule & jobs** in the admin sidebar or `/schedule`.
-Admins can create/edit customer and equipment jobs, move job progress on the
-shop board through the job editor, add timed field visits or flexible shop-day
+Admins can create/edit customer and equipment jobs, move job progress by
+dragging cards on the shop board (or the job editor), add timed field visits or flexible shop-day
 ranges, assign multiple staff and a lead, reschedule, cancel, and complete
 individual bookings. The weekly calendar shows bookings and assigned crew.
 Staff can read only their assigned jobs/bookings; only admins manage scheduling.
@@ -110,6 +110,17 @@ notifications and verified delivery, phone-calendar subscriptions, time off,
 and resource/bay capacity. Current job list is capped at 200 most recently
 updated jobs; booking views have explicit initial limits. These limits and
 the remaining features should be addressed before a full scheduling release.
+
+### To review with Jemos Warren
+
+- **Visit outcome choices.** A field visit's "Visit outcome" menu on the job page
+  currently offers only *Visit completed* and *Cancel visit* (after a required
+  "-- Select outcome --"). Confirm with Jemos whether the crew needs more
+  outcomes, e.g. *Needs return trip*, *Customer not home*, *Waiting on parts*,
+  or *Rescheduled*, and whether finishing the last visit should move the job
+  to *Ready for pickup* or *Completed*. Code: `BookingStatusForm` in
+  `apps/admin/src/app/(portal)/schedule/forms.tsx` and `finishBooking` in
+  `schedule/actions.ts`.
 
 ## Admin authentication
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPinned, Route } from "lucide-react";
+import { ExternalLink, MapPinned, Route } from "lucide-react";
 import { useActionState, useCallback, useEffect, useRef, useState, useTransition } from "react";
 import type { RouteVisit } from "@/lib/route-visits";
 import { centralToday, zone } from "@/lib/scheduling";
@@ -12,6 +12,41 @@ import { fitRoute, shiftViewport, MAP_WIDTH, MAP_HEIGHT, type MapViewport } from
 const input = "w-full min-w-0 rounded-md border border-[#2a2119]/25 bg-white px-3 py-2.5";
 const clock = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: zone });
 const time = (value: string) => clock.format(new Date(value));
+
+// Google Maps directions links accept at most 9 stops between start and finish,
+// so longer routes are split into consecutive parts that share their end points.
+const MAX_WAYPOINTS = 9;
+function googleMapsLinks(data: RouteMapData) {
+  const coordinate = ({ lat, lng }: RouteMapData["origin"]) => `${lat.toFixed(6)},${lng.toFixed(6)}`;
+  const points = [data.origin, ...data.ordered, data.destination];
+  const links: { url: string; first: number; last: number }[] = [];
+  for (let start = 0; start < points.length - 1; start += MAX_WAYPOINTS + 1) {
+    const end = Math.min(start + MAX_WAYPOINTS + 1, points.length - 1);
+    const url = new URL("https://www.google.com/maps/dir/");
+    url.searchParams.set("api", "1");
+    url.searchParams.set("origin", coordinate(points[start]));
+    url.searchParams.set("destination", coordinate(points[end]));
+    const waypoints = points.slice(start + 1, end);
+    if (waypoints.length) url.searchParams.set("waypoints", waypoints.map(coordinate).join("|"));
+    url.searchParams.set("travelmode", "driving");
+    links.push({ url: url.toString(), first: start, last: end });
+  }
+  return links;
+}
+
+function GoogleMapsLinks({ data, markers }: { data: RouteMapData; markers: string[] }) {
+  const links = googleMapsLinks(data);
+  // Point 0 is the start (S) and the final point is the finish; everything between is a routed stop.
+  const label = (index: number) => index === 0 ? "start" : index === markers.length + 1 ? "finish" : `stop ${markers[index - 1]}`;
+  const button = "inline-flex items-center gap-2 rounded-md border border-[#2a2119]/25 bg-white px-3 py-2 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2";
+  return <div className="flex flex-wrap gap-2">
+    {links.map((link, part) => <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={button}>
+      <ExternalLink size={16} aria-hidden="true" />
+      {links.length === 1 ? "Open in Google Maps" : `Google Maps part ${part + 1}: ${label(link.first)} to ${label(link.last)}`}
+      <span className="sr-only">(opens in a new tab)</span>
+    </a>)}
+  </div>;
+}
 
 function VisitLink({ visit }: { visit: RouteVisit }) {
   if (!visit.jobId) return <strong>{visit.title}</strong>;
@@ -230,6 +265,7 @@ export function Planner({ day, lead, visits, configured, depot }: {
           ? <RouteMap key={plan.map} image={plan.map} data={plan.mapData} />
           : <p className="p-5 text-sm text-[#762f19]">The map image was unavailable. Review the route details below.</p>}
         <div className="space-y-4 p-5 text-sm">
+          {plan.stops.length > 0 && <GoogleMapsLinks data={plan.mapData} markers={plan.stops.map(stop => stop.marker)} />}
           {plan.map && <p className="text-[#6a5b50]">S is the start. Z marks a separate finish. Gray pins are visits that need attention.</p>}
           {plan.flexible && <p className="rounded-md bg-[#8f3f21]/10 p-3">Proposed visit times. The schedule still shows the original appointments.</p>}
           {plan.trafficWarning && <p className="rounded-md bg-[#8f3f21]/10 p-3">Traffic estimates are incomplete or may cause delays. Check the time between stops before dispatch.</p>}
