@@ -38,6 +38,23 @@ export async function saveJob(_state: ScheduleState, form: FormData): Promise<Sc
   return { message: "Job saved." };
 }
 
+export async function moveJob(id: string, from: string, to: string): Promise<ScheduleState> {
+  const { supabase } = await requireAdmin();
+  if (!uuid(id) || !(from in statuses) || !(to in statuses)) return { error: "Invalid move. Reload and try again." };
+  if (from === to) return {};
+  if (to === "completed") {
+    const {count,error}=await supabase.from("bookings").select("id",{count:"exact",head:true}).eq("job_id",id).eq("status","scheduled");
+    if(error) return {error:"Unable to check remaining bookings. Try again."};
+    if(count) return {error:"Complete or cancel this job's remaining scheduled bookings before moving it to Completed."};
+  }
+  // Only move if the job is still where the user saw it, so a stale board can't overwrite someone else's change.
+  const result = await supabase.from("jobs").update({ status: to, updated_at: new Date().toISOString() }).eq("id",id).eq("status",from).select("id").maybeSingle();
+  if (result.error) return { error: "The job could not be moved. Try again." };
+  refresh(id);
+  if (!result.data) return { error: "This job was changed by someone else. The board has been refreshed." };
+  return { message: `Moved to ${statuses[to as keyof typeof statuses]}.` };
+}
+
 export async function saveBooking(_state: ScheduleState, form: FormData): Promise<ScheduleState> {
   const { supabase } = await requireAdmin();
   const id = text(form,"id"); const jobId = text(form,"job_id"); const kind = text(form,"kind");

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireStaff } from "@/lib/auth";
 import { centralToday, shiftDay, weekStart, bookingDays, bookingLabel, parseCentral, statuses } from "@/lib/scheduling";
 import { CreateJobPanel } from "./forms";
+import { ShopBoard } from "./board";
 import { schedulingCrew } from "@/lib/schedule-data";
 
 export default async function SchedulePage({searchParams}:{searchParams:Promise<{week?:string;view?:string}>}) {
@@ -37,8 +38,8 @@ export default async function SchedulePage({searchParams}:{searchParams:Promise<
           </section>;
         })}</div></div>
         {bookings.length===1000&&<p role="alert">Only the first 1,000 bookings are shown.</p>}
-      </section> : board ? <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Shop board">{Object.entries(statuses).map(([value,label])=><section key={value} className="rounded-lg border border-[#2a2119]/15 bg-[#fffaf0] p-4"><h2 className="font-semibold">{label} <span className="text-[#6a5b50]">({jobs.filter(job=>job.status===value).length})</span></h2><div className="mt-4 grid gap-3">{jobs.filter(job=>job.status===value).map(job=><JobCard key={job.id} job={job}/>)}</div></section>)}</section> : null}
-      <section className="mt-8" aria-labelledby="jobs-heading"><h2 id="jobs-heading" className="text-xl font-semibold">{isAdmin?"Job list":"Assigned jobs"}</h2><p className="mt-2 text-sm text-[#6a5b50]">Up to 200 most recently updated jobs. New and ready jobs can stay here until a booking is made.</p><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{jobs.map(job=><JobCard key={job.id} job={job}/>)}</div>{!jobs.length&&<p className="mt-4 rounded-lg border border-dashed border-[#2a2119]/30 p-8 text-[#6a5b50]">{isAdmin?"No jobs yet. Create a job above, then add its shop days or field visits.":"No jobs are assigned to you yet."}</p>}</section>
+      </section> : board ? <ShopBoard jobs={jobs} canEdit={isAdmin}/> : null}
+      {!board && <section className="mt-8" aria-labelledby="jobs-heading"><h2 id="jobs-heading" className="text-xl font-semibold">{isAdmin?"Job list":"Assigned jobs"}</h2><p className="mt-2 text-sm text-[#6a5b50]">Up to 200 most recently updated jobs. New and ready jobs can stay here until a booking is made.</p><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{jobs.map(job=><JobCard key={job.id} job={job}/>)}</div>{!jobs.length&&<p className="mt-4 rounded-lg border border-dashed border-[#2a2119]/30 p-8 text-[#6a5b50]">{isAdmin?"No jobs yet. Create a job above, then add its shop days or field visits.":"No jobs are assigned to you yet."}</p>}</section>}
     </div>
   </section>;
 }
